@@ -1,6 +1,8 @@
-# Importing General libraries
-from typing import List, Any
 
+# supervision.__version__: 0.18.0
+# Ultralytics YOLOv8.1.5 🚀 Python-3.10.8
+
+# Importing General libraries
 import ultralytics
 import supervision as sv
 from ultralytics import YOLO
@@ -19,84 +21,26 @@ def filter_detection_by_tracker_id(detections, tracker_id_list):
     return detections
 
 
-def face_detection(frame):
-    model = YOLO('Yolov8small_trained_ver1.pt')
-    unblurred_id_list = []
-
-    # Setting up annotators & tracker
-    byte_tracker = sv.ByteTrack()
-    bounding_box_annotator = sv.BoundingBoxAnnotator(thickness=1)
-    label_annotator = sv.LabelAnnotator(text_padding=1)
-    blur_filter_annotator = sv.BlurAnnotator(kernel_size=30)
-    pixelate_annotator = sv.PixelateAnnotator(pixel_size=15)
-
-    result = model(frame)[0]
-
-    # Extracting detections and updating with tracker id
-    detections_track = sv.Detections.from_ultralytics(result)
-    detections_track = byte_tracker.update_with_detections(detections_track)
-
-    # filtering using confidence
-    # detections_track = detections_track[detections_track.confidence > 0.5]
-
-    # setting up Labels format
-    labels = [
-        f"#{tracker_id} {model.names[class_id]} {confidence:0.2f}"
-        for _, _, confidence, class_id, tracker_id
-        in detections_track
-    ]
-
-    # Drawing annotations on the image/frame
-    annotated_image_track = label_annotator.annotate(
-        scene=frame.copy(),
-        detections=detections_track,
-        labels=labels
-    )
-
-    annotated_image_track = bounding_box_annotator.annotate(
-        scene=annotated_image_track,
-        detections=detections_track
-    )
-
-    if unblurred_id_list:
-        blurred_detections_track = filter_detection_by_tracker_id(detections_track,
-                                                                  unblurred_id_list)
-    else:
-        blurred_detections_track = detections_track
-
-    annotated_image_track = pixelate_annotator.annotate(
-        scene=annotated_image_track,
-        detections=blurred_detections_track
-    )
-
-    # annotated_image_track = blur_filter_annotator.annotate(
-    #     scene = annotated_image_track,
-    #     detections = blurred_detections_track
-    # )
-    return annotated_image_track
-
-
-def check_id(file_path):
-    """
-        :type: file_path: str
-        :rtype: list[int]
-    """
-    file = open(file_path, "r")
-    content_list = file.readlines()
-    ids_list = []
-    for line in content_list:
-        # Split the line by whitespace
-        numbers = line.split()
-
-        # Iterate through the numbers and convert them to integers
-        for num in numbers:
-            try:
-                num = int(num)
-                ids_list.append(num)
-            except ValueError:
-                pass
-    file.close()
-    return ids_list
+# def check_id(file_path):
+#     """
+#         :type: file_path: str
+#         :rtype: list[int]
+#     """
+#     file = open(file_path, "r")
+#     content_list = file.readlines()
+#     ids_list = []
+#     for line in content_list:
+#         # Split the line by whitespace
+#         numbers = line.split()
+#
+#         for num in numbers:
+#             try:
+#                 num = int(num)
+#                 ids_list.append(num)
+#             except ValueError:
+#                 pass
+#     file.close()
+#     return ids_list
 
 
 def mouse_pos(event, x, y, flags, param):
@@ -127,10 +71,7 @@ if __name__ == '__main__':
 
     ids_to_unblurr = set()
     mouseXY = []
-    frame_counter = 0
-    subsampling_rate = 1
-    num_frames = 5
-    frame_buffer = []
+    # frame_counter = 0
 
     # Setting up annotators & tracker
     byte_tracker = sv.ByteTrack()
@@ -151,13 +92,13 @@ if __name__ == '__main__':
         # fps = 1 / elapsed_time
         #########################
 
-        frame = cv2.resize(frame, (1280, 720))  # (1280, 720)(800, 600)(1920, 1080)
+        frame = cv2.resize(frame, (800, 480))  # (1280, 720)(800, 600)(1920, 1080)
 
-        # if frame_counter % subsampling_rate == 0:
         result = model(frame)[0]
-        # results = model.predict(frame, stream=True, show=True, device=0)
         detections = sv.Detections.from_ultralytics(result)
         detections = byte_tracker.update_with_detections(detections)
+
+        # Setting up Labels format
         labels = [
             f"# {tracker_id} {model.names[class_id]} {confidence:0.2f}"
             for _, _, confidence, class_id, tracker_id, _
