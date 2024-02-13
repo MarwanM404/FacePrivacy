@@ -1,0 +1,4 @@
+# pip install -r requirements.txt
+ultralytics==8.1.5
+supervision==0.18.0
+opencv-python==4.9.0.80

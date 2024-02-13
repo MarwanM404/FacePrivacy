@@ -7,7 +7,7 @@ import ultralytics
 import supervision as sv
 from ultralytics import YOLO
 import cv2
-import time
+# import time
 
 
 def library_check():
@@ -65,9 +65,12 @@ def box_selector_with_id(mouseXY, detections):
 
 if __name__ == '__main__':
 
-    model = YOLO('Yolov8n_ver2.pt')
+    model = YOLO('trained_models/Yolov8n_ver2.pt')
+    # https://www.youtube.com/watch?v=oMJyrvHSGqY
     video_path = "test_data/M G ROAD CROWD WALKING _ STOCK FOOTAGES.mp4"
     ################################################################################
+
+    cap = cv2.VideoCapture(video_path)  # (0) for webcam
 
     ids_to_unblurr = set()
     mouseXY = []
@@ -80,7 +83,7 @@ if __name__ == '__main__':
     # blur_filter_annotator = sv.BlurAnnotator(kernel_size=30)
     pixelate_annotator = sv.PixelateAnnotator(pixel_size=15)
 
-    cap = cv2.VideoCapture(video_path)  # (0) for webcam
+
 
     # FPS counter
     # start_time = time.time()
@@ -92,7 +95,7 @@ if __name__ == '__main__':
         # fps = 1 / elapsed_time
         #########################
 
-        frame = cv2.resize(frame, (800, 480))  # (1280, 720)(800, 600)(1920, 1080)
+        frame = cv2.resize(frame, (800, 600))  # (1280, 720)(800, 600)(1920, 1080)
 
         result = model(frame)[0]
         detections = sv.Detections.from_ultralytics(result)
