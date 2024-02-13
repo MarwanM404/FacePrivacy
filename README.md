@@ -22,6 +22,6 @@ I also added a way to blurr and unblurr on the fly using Left mouse button
 https://github.com/MarwanM404/FacePrivacy/assets/102218690/2db8d6ad-3869-4a73-ab77-fd2785f9ba99
 
 ### TODO
-1- Improve the dataset for detecting faces further in the background
+1- Improve the dataset for detecting faces further in the background or out of focus
 
 2- Testing performance using threading
