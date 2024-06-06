@@ -24,4 +24,4 @@ https://github.com/MarwanM404/FacePrivacy/assets/102218690/2db8d6ad-3869-4a73-ab
 ### TODO
 1- Improve the dataset for detecting faces further in the background or out of focus
 
-2- Testing performance using threading
+~~2- Testing performance using threading~~
